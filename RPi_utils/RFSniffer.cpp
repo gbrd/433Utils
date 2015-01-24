@@ -9,13 +9,14 @@
 #include "RCSwitch.h"
 #include <stdlib.h>
 #include <stdio.h>
-     
+#include <string>
+#include <iostream>     
      
 RCSwitch mySwitch;
  
 
 void handleMsg(){
-	      if (mySwitch.available()) {
+      if (mySwitch.available()) {
         int value = mySwitch.getReceivedValue();
         if (value == 0) {
           printf("Unknown encoding");
@@ -40,9 +41,18 @@ int main(int argc, char *argv[]) {
 	mySwitch.enableReceive(PIN,&handleMsg);  // Receiver on inerrupt 0 => that is pin #2
      
     
-//     while(1) {
-//       handleMsg();
-//     }
+       while(1) {
+         //handleMsg();
+
+         std::string line;
+         std::getline(std::cin, line);  // read a line from std::cin into line
+         //std::cout << "Your Line Was (" << line << ")\n";
+         //std::getline(std::cin, line);  
+	 if(line == "q"){
+		break;
+	 }
+
+       }
 
 	exit(0);
 }
