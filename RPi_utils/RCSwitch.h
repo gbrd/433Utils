@@ -68,6 +68,8 @@ class RCSwitch {
     void send(char* Code);
     
     void enableReceive(int interrupt);
+	void enableReceive(int interrupt, void (*function)(void));
+
     void enableReceive();
     void disableReceive();
     bool available();
@@ -80,6 +82,8 @@ class RCSwitch {
     unsigned int* getReceivedRawdata();
   
     void enableTransmit(int nTransmitterPin);
+	
+	
     void disableTransmit();
     void setPulseLength(int nPulseLength);
     void setRepeatTransmit(int nRepeatTransmit);
@@ -88,6 +92,9 @@ class RCSwitch {
 	void setProtocol(int nProtocol, int nPulseLength);
   
   private:
+	
+	static void voidfunc();
+	  
     char* getCodeWordB(int nGroupNumber, int nSwitchNumber, boolean bStatus);
     char* getCodeWordA(char* sGroup, int nSwitchNumber, boolean bStatus);
     char* getCodeWordC(char sFamily, int nGroup, int nDevice, boolean bStatus);
@@ -109,6 +116,7 @@ class RCSwitch {
     int nPulseLength;
     int nRepeatTransmit;
 	char nProtocol;
+	static void (*nHandleReceived)(void);
 
 	static int nReceiveTolerance;
     static unsigned long nReceivedValue;
@@ -116,6 +124,8 @@ class RCSwitch {
 	static unsigned int nReceivedDelay;
 	static unsigned int nReceivedProtocol;
     static unsigned int timings[RCSWITCH_MAX_CHANGES];
+
+	
 
     
 };

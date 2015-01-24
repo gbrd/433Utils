@@ -33,6 +33,8 @@ unsigned int RCSwitch::nReceivedProtocol = 0;
 unsigned int RCSwitch::timings[RCSWITCH_MAX_CHANGES];
 int RCSwitch::nReceiveTolerance = 60;
 
+void (*RCSwitch::nHandleReceived)(void) = &voidfunc;
+
 RCSwitch::RCSwitch() {
   this->nReceiverInterrupt = -1;
   this->nTransmitterPin = -1;
@@ -41,6 +43,9 @@ RCSwitch::RCSwitch() {
   this->setRepeatTransmit(10);
   this->setReceiveTolerance(60);
   this->setProtocol(1);
+}
+
+void RCSwitch::voidfunc(){
 }
 
 /**
@@ -441,6 +446,12 @@ void RCSwitch::enableReceive(int interrupt) {
   this->enableReceive();
 }
 
+void RCSwitch::enableReceive(int interrupt, void (*function)(void)) {
+	this->enableReceive(interrupt);
+	RCSwitch::nHandleReceived = function;
+}
+
+
 void RCSwitch::enableReceive() {
   if (this->nReceiverInterrupt != -1) {
     RCSwitch::nReceivedValue = NULL;
@@ -591,6 +602,11 @@ void RCSwitch::handleInterrupt() {
   }
   RCSwitch::timings[changeCount++] = duration;
   lastTime = time;  
+  
+  if( RCSwitch::nReceivedValue != NULL){
+	RCSwitch::nHandleReceived ();
+  }
+  
 }
 
 /**
